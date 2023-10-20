@@ -10,6 +10,10 @@ jobs:
         id: checkout_code
         uses: actions/checkout@v4
 
+      - name: Build image from Dockerfile
+        run: |
+          docker build -t docker.io/my-organization/my-app:${{ github.sha }}
+
       - name: Run Trivy scan
         id: run_trivy_scan
         uses: aquasecurity/trivy-action@master
