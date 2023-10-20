@@ -25,7 +25,7 @@ jobs:
         id: send_slack_notification
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: "CHANNEL_ID" # need secret?
+          channel-id: "${{secrets.SLACK_CHANNEL_ID}}"
           payload: |
             {
               "blocks": [
@@ -41,7 +41,7 @@ jobs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Ref*\nref/heads/master"
+                      "text": "*Ref*\n${{github.ref}}"
                     },
                     {
                       "type": "mrkdwn",
@@ -54,11 +54,11 @@ jobs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Actions URL:*\n<URL|Build and Push>" #insert URL?
+                      "text": "*Actions URL:*\n<URL|Build and Push>" 
                     },
                     {
                       "type": "mrkdwn",
-                      "text": "*Commit*\n<COMMIT>"
+                      "text": "*Commit*\n${{github.sha}}"
                     }
                   ]
                 },
@@ -74,14 +74,14 @@ jobs:
               ]
             }
         env:
-          SLACK_BOT_TOKEN: ${{secrets.SLACK_BOT_TOKEN}} #PUT AS SECRET
+          SLACK_BOT_TOKEN: ${{secrets.SLACK_BOT_TOKEN}}
 
       - name: Upload file to Slack
         id: upload_file_to_slack
         uses: MeilCli/slack-upload-file@v3
         with:
-          slack_token: ${{secrets.SLACK_BOT_TOKEN}} #PUT AS SECRET
-          channel_id: ${{}} #PUT AS SECRET
+          slack_token: ${{secrets.SLACK_BOT_TOKEN}}
+          channel_id: ${{secrets.SLACK_CHANNEL_ID}}
           content: "file content"
           file_type: "text"
           file_name: "trivy-report.txt"
