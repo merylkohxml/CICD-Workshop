@@ -1,5 +1,8 @@
 name: CA Workflow
-on: [push]
+on:
+  push:
+    branches:
+      - v[0-9]+.[0-9]+
 
 jobs:
   check_repository:
@@ -31,6 +34,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - id: commit
+        uses: actions-commit-hash@v3
+
       - name: Send Slack notification
         id: send_slack_notification
         uses: slackapi/slack-github-action@v1.24.0
@@ -39,10 +45,10 @@ jobs:
             {
               "blocks": [
                 {
-                  "type": "header",
+                  "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{github.repository_owner}}"
+                    "text": "Name"
                   }
                 },
                 {
@@ -63,11 +69,11 @@ jobs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Actions URL:*\n<URL|${{github.action}}>"
+                      "text": "*Actions URL:*\n<${{github.repositoryUrl}}|${{github.action}}>"
                     },
                     {
                       "type": "mrkdwn",
-                      "text": "*Commit*\n${{github.sha}}"
+                      "text": "*Commit*\n${{ steps.commit.outputs.short }}"
                     }
                   ]
                 },
