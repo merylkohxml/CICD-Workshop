@@ -29,6 +29,10 @@ jobs:
           severity: "HIGH"
           output: "trivy-report.txt"
 
+      - name: Check contents of trivy-report.txt
+        run: |
+          cat trivy-report.txt
+
       - name: Upload trivy report
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
@@ -47,6 +51,10 @@ jobs:
         with:
           name: report
 
+      - name: Check contents of trivy-report.txt
+        run: |
+          cat trivy-report.txt
+
       #RTCAMP
       - name: Send Slack notification
         uses: rtCamp/action-slack-notify@v2
@@ -61,7 +69,7 @@ jobs:
         with:
           slack_token: ${{secrets.SLACK_BOT_TOKEN}}
           channel_id: ${{secrets.SLACK_CHANNEL_ID}}
-          content: trivy-report.txt
+          file_path: trivy-report.txt
           file_type: "text"
           file_name: "trivy-report.txt"
           title: "Scan report"
