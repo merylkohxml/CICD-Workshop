@@ -85,11 +85,27 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }} #updated password
 
       - name: Build and push
+        id: build_and_push
         uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:fortunes"
           push: true
           tags: merylkohxml/cicdworkshop:${{github.sha}}
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.1.1
+
+      - name: Check Install
+        run: cosign version
+
+      - name: Sign image with a key
+        run: |
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${TAGS}@${DIGEST}"
+        env:
+          TAGS: ${{ steps.build_and_push.outputs.tags }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          DIGEST: ${{ steps.build_and_push.outputs.digest }}
 
       # - name: Send Slack notification
       #   id: send_slack_notification
