@@ -79,7 +79,7 @@ jobs:
                       "text": "*Scan failed - Name*\nFailed trivy scan, see uploaded report"
                     }
                   ]
-                },
+                }
               ]
             }
         env:
