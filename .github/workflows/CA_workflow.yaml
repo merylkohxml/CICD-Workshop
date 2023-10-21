@@ -27,6 +27,7 @@ jobs:
           ignore-unfixed: true
           vuln-type: "os,library"
           severity: "HIGH"
+          output: "trivy-report.txt"
 
   trivy_fail:
     needs: [scan_repository]
@@ -35,27 +36,24 @@ jobs:
 
     steps:
       #RTCAMP
-      - name: Slack Notification
+      - name: Send Slack notification
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_TITLE: "Scan failed"
-          SLACK_MESSAGE: "test"
+          SLACK_MESSAGE: "Failed trivy scan, see uploaded report"
 
-      # - name: Slack notification
-      #   uses: 8398a7/action-slack@v3
-      #   with:
-      #     status: custom
-      #     fields: workflow,job,commit,repo,ref,author,took
-      #     custom_payload: |
-      #       {
-      #         attachments: [{
-      #           color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-      #           text: `${process.env.AS_WORKFLOW}\n${process.env.AS_JOB} (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@${process.env.AS_REF} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
-      #         }]
-      #       }
-      #   env:
-      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Upload file to Slack
+        id: upload_file_to_slack
+        uses: MeilCli/slack-upload-file@v3
+        with:
+          slack_token: ${{secrets.SLACK_BOT_TOKEN}}
+          channel_id: ${{secrets.SLACK_CHANNEL_ID}}
+          content: "file content"
+          file_type: "text"
+          file_name: "trivy-report.txt"
+          title: "Scan report"
+          initial_comment: "post by slack-upload-file"
 
       # - name: Send Slack notification
       #   id: send_slack_notification
@@ -111,15 +109,3 @@ jobs:
       #   env:
       #     SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
       #     SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-
-      # - name: Upload file to Slack
-      #   id: upload_file_to_slack
-      #   uses: MeilCli/slack-upload-file@v3
-      #   with:
-      #     slack_token: ${{secrets.SLACK_BOT_TOKEN}}
-      #     channel_id: ${{secrets.SLACK_CHANNEL_ID}}
-      #     content: "file content"
-      #     file_type: "text"
-      #     file_name: "trivy-report.txt"
-      #     title: "title of file"
-      #     initial_comment: "post by slack-upload-file"
