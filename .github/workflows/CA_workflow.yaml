@@ -25,60 +25,65 @@ jobs:
           vuln-type: "os,library"
           severity: "HIGH"
 
-      # - name: Send Slack notification
-      #   id: send_slack_notification
-      #   uses: slackapi/slack-github-action@v1.24.0
-      #   with:
-      #     channel-id: "${{secrets.SLACK_CHANNEL_ID}}"
-      #     payload: |
-      #       {
-      #         "blocks": [
-      #           {
-      #             "type": "header",
-      #             "text": {
-      #               "type": "plain_text",
-      #               "text": "Name",
-      #             }
-      #           },
-      #           {
-      #             "type": "section",
-      #             "fields": [
-      #               {
-      #                 "type": "mrkdwn",
-      #                 "text": "*Ref*\n${{github.ref}}"
-      #               },
-      #               {
-      #                 "type": "mrkdwn",
-      #                 "text": "*Event*\npush"
-      #               }
-      #             ]
-      #           },
-      #           {
-      #             "type": "section",
-      #             "fields": [
-      #               {
-      #                 "type": "mrkdwn",
-      #                 "text": "*Actions URL:*\n<URL|Build and Push>"
-      #               },
-      #               {
-      #                 "type": "mrkdwn",
-      #                 "text": "*Commit*\n${{github.sha}}"
-      #               }
-      #             ]
-      #           },
-      #           {
-      #             "type": "section",
-      #             "fields": [
-      #               {
-      #                 "type": "mrkdwn",
-      #                 "text": "*Scan failed - Name*\nFailed trivy scan, see uploaded report"
-      #               }
-      #             ]
-      #           },
-      #         ]
-      #       }
-      #   env:
-      #     SLACK_BOT_TOKEN: ${{secrets.SLACK_BOT_TOKEN}}
+  trivy_fail:
+    if: failure()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Slack notification
+        id: send_slack_notification
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{github.repository_owner}}",
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Ref*\n${{github.ref}}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Event*\n${{github.event_name}}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Actions URL:*\n<URL|${{github.action}}>"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Commit*\n${{github.sha}}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Scan failed - Name*\nFailed trivy scan, see uploaded report"
+                    }
+                  ]
+                },
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       # - name: Upload file to Slack
       #   id: upload_file_to_slack
