@@ -89,7 +89,7 @@ jobs:
         with:
           context: "{{defaultContext}}:fortunes"
           push: true
-          tags: fred/go-fortune:${{github.sha}}
+          tags: merylkohxml/cicdworkshop:${{github.sha}}
 
       # - name: Send Slack notification
       #   id: send_slack_notification
