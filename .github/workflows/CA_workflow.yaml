@@ -34,63 +34,81 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - id: commit
-        uses: actions-commit-hash@v3
-
-      - name: Send Slack notification
-        id: send_slack_notification
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          payload: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Name"
-                  }
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Ref*\n${{github.ref}}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Event*\n${{github.event_name}}"
-                    }
-                  ]
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Actions URL:*\n<${{github.repositoryUrl}}|${{github.action}}>"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Commit*\n${{ steps.commit.outputs.short }}"
-                    }
-                  ]
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Scan failed - Name*\nFailed trivy scan, see uploaded report"
-                    }
-                  ]
-                }
-              ]
-            }
+      #RTCAMP
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+      # - name: Slack notification
+      #   uses: 8398a7/action-slack@v3
+      #   with:
+      #     status: custom
+      #     fields: workflow,job,commit,repo,ref,author,took
+      #     custom_payload: |
+      #       {
+      #         attachments: [{
+      #           color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+      #           text: `${process.env.AS_WORKFLOW}\n${process.env.AS_JOB} (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@${process.env.AS_REF} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
+      #         }]
+      #       }
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      # - name: Send Slack notification
+      #   id: send_slack_notification
+      #   uses: slackapi/slack-github-action@v1.24.0
+      #   with:
+      #     payload: |
+      #       {
+      #         "blocks": [
+      #           {
+      #             "type": "section",
+      #             "text": {
+      #               "type": "plain_text",
+      #               "text": "Name"
+      #             }
+      #           },
+      #           {
+      #             "type": "section",
+      #             "fields": [
+      #               {
+      #                 "type": "mrkdwn",
+      #                 "text": "*Ref*\n${{github.ref}}"
+      #               },
+      #               {
+      #                 "type": "mrkdwn",
+      #                 "text": "*Event*\n${{github.event_name}}"
+      #               }
+      #             ]
+      #           },
+      #           {
+      #             "type": "section",
+      #             "fields": [
+      #               {
+      #                 "type": "mrkdwn",
+      #                 "text": "*Actions URL:*\n<${{github.repositoryUrl}}|${{github.action}}>"
+      #               },
+      #               {
+      #                 "type": "mrkdwn",
+      #                 "text": "*Commit*\n${{ steps.commit.outputs.short }}"
+      #               }
+      #             ]
+      #           },
+      #           {
+      #             "type": "section",
+      #             "fields": [
+      #               {
+      #                 "type": "mrkdwn",
+      #                 "text": "*Scan failed - Name*\nFailed trivy scan, see uploaded report"
+      #               }
+      #             ]
+      #           }
+      #         ]
+      #       }
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
+      #     SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       # - name: Upload file to Slack
       #   id: upload_file_to_slack
