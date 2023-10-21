@@ -30,6 +30,7 @@ jobs:
           output: "trivy-report.txt"
 
       - name: Upload trivy report
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v3
         with:
           name: report
