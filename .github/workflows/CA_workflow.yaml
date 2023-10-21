@@ -39,6 +39,8 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_TITLE: "Scan failed"
+          SLACK_MESSAGE: "test"
 
       # - name: Slack notification
       #   uses: 8398a7/action-slack@v3
