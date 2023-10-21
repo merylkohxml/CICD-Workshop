@@ -29,12 +29,23 @@ jobs:
           severity: "HIGH"
           output: "trivy-report.txt"
 
+      - name: Upload trivy report
+        uses: actions/upload-artifact@v3
+        with:
+          name: report
+          path: trivy-report.txt
+
   trivy_fail:
     needs: [scan_repository]
     if: ${{failure()}}
     runs-on: ubuntu-latest
 
     steps:
+      - name: Download trivy report
+        uses: actions/download-artifact@v3
+        with:
+          name: report
+
       #RTCAMP
       - name: Send Slack notification
         uses: rtCamp/action-slack-notify@v2
@@ -52,6 +63,7 @@ jobs:
           content: trivy-report.txt
           file_type: "text"
           file_name: "trivy-report.txt"
+          title: "Scan report"
           initial_comment: "Scan report"
 
       # - name: Send Slack notification
