@@ -26,7 +26,8 @@ jobs:
           severity: "HIGH"
 
   trivy_fail:
-    if: failure()
+    needs: [check_repository]
+    if: ${{needs.check_repository.result == 'failure'}}
     runs-on: ubuntu-latest
 
     steps:
