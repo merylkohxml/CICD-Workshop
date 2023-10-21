@@ -10,84 +10,84 @@ jobs:
         id: checkout_code
         uses: actions/checkout@v4
 
-      - name: Build image from Dockerfile
+      - name: Build an image from Dockerfile
         run: |
-          docker build -t docker.io/my-organization/my-app:${{ github.sha }}
+          docker build -t docker.io/gdipsa/cicdworkshop:${{ github.sha }} ./fortunes
 
       - name: Run Trivy scan
         id: run_trivy_scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref:
+          image-ref: "docker.io/gdipsa/cicdworkshop:${{ github.sha }}"
           format: "table"
           exit-code: "1"
           ignore-unfixed: true
           vuln-type: "os,library"
           severity: "HIGH"
 
-      - name: Send Slack notification
-        id: send_slack_notification
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          channel-id: "${{secrets.SLACK_CHANNEL_ID}}"
-          payload: |
-            {
-              "blocks": [
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Name",
-                  }
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Ref*\n${{github.ref}}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Event*\npush"
-                    }
-                  ]
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Actions URL:*\n<URL|Build and Push>" 
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Commit*\n${{github.sha}}"
-                    }
-                  ]
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Scan failed - Name*\nFailed trivy scan, see uploaded report"
-                    }
-                  ]
-                },
-              ]
-            }
-        env:
-          SLACK_BOT_TOKEN: ${{secrets.SLACK_BOT_TOKEN}}
+      # - name: Send Slack notification
+      #   id: send_slack_notification
+      #   uses: slackapi/slack-github-action@v1.24.0
+      #   with:
+      #     channel-id: "${{secrets.SLACK_CHANNEL_ID}}"
+      #     payload: |
+      #       {
+      #         "blocks": [
+      #           {
+      #             "type": "header",
+      #             "text": {
+      #               "type": "plain_text",
+      #               "text": "Name",
+      #             }
+      #           },
+      #           {
+      #             "type": "section",
+      #             "fields": [
+      #               {
+      #                 "type": "mrkdwn",
+      #                 "text": "*Ref*\n${{github.ref}}"
+      #               },
+      #               {
+      #                 "type": "mrkdwn",
+      #                 "text": "*Event*\npush"
+      #               }
+      #             ]
+      #           },
+      #           {
+      #             "type": "section",
+      #             "fields": [
+      #               {
+      #                 "type": "mrkdwn",
+      #                 "text": "*Actions URL:*\n<URL|Build and Push>"
+      #               },
+      #               {
+      #                 "type": "mrkdwn",
+      #                 "text": "*Commit*\n${{github.sha}}"
+      #               }
+      #             ]
+      #           },
+      #           {
+      #             "type": "section",
+      #             "fields": [
+      #               {
+      #                 "type": "mrkdwn",
+      #                 "text": "*Scan failed - Name*\nFailed trivy scan, see uploaded report"
+      #               }
+      #             ]
+      #           },
+      #         ]
+      #       }
+      #   env:
+      #     SLACK_BOT_TOKEN: ${{secrets.SLACK_BOT_TOKEN}}
 
-      - name: Upload file to Slack
-        id: upload_file_to_slack
-        uses: MeilCli/slack-upload-file@v3
-        with:
-          slack_token: ${{secrets.SLACK_BOT_TOKEN}}
-          channel_id: ${{secrets.SLACK_CHANNEL_ID}}
-          content: "file content"
-          file_type: "text"
-          file_name: "trivy-report.txt"
-          title: "title of file"
-          initial_comment: "post by slack-upload-file"
+      # - name: Upload file to Slack
+      #   id: upload_file_to_slack
+      #   uses: MeilCli/slack-upload-file@v3
+      #   with:
+      #     slack_token: ${{secrets.SLACK_BOT_TOKEN}}
+      #     channel_id: ${{secrets.SLACK_CHANNEL_ID}}
+      #     content: "file content"
+      #     file_type: "text"
+      #     file_name: "trivy-report.txt"
+      #     title: "title of file"
+      #     initial_comment: "post by slack-upload-file"
