@@ -27,7 +27,7 @@ jobs:
 
   trivy_fail:
     needs: [check_repository]
-    if: ${{needs.check_repository.result == 'failure'}}
+    if: ${{failure()}}
     runs-on: ubuntu-latest
 
     steps:
