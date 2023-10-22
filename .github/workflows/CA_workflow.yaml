@@ -87,8 +87,7 @@ jobs:
       - id: docker_meta
         uses: docker/metadata-action@v4.4.0
         with:
-          images: docker.io/myimage
-          tags: merylkohxml/cicdworkshop:${{github.sha}}
+          images: docker.io/merylkohxml/cicdworkshop/myimage
 
       - name: Build and push
         id: build_and_push
@@ -96,7 +95,7 @@ jobs:
         with:
           context: "{{defaultContext}}:fortunes"
           push: true
-          tags: ${{ steps.docker_meta.outputs.tags }}
+          tags: merylkohxml/cicdworkshop:${{github.sha}}
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3.1.1
@@ -108,7 +107,7 @@ jobs:
         run: |
           cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${TAGS}@${DIGEST}"
         env:
-          TAGS: ${{ steps.docker_meta.outputs.tags }}
+          TAGS: ${{ steps.build_and_push.outputs.tags }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
           DIGEST: ${{ steps.build_and_push.outputs.digest }}
