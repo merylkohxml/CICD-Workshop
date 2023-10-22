@@ -105,7 +105,7 @@ jobs:
 
       - name: Sign image with a key
         run: |
-          cosign sign --key=opt/bin/cosign.key myimage"@${DIGEST}"
+          cosign sign --key cosign.key docker.io/merylkohxml/cicdworkshop"@${DIGEST}"
         env:
           DIGEST: ${{ steps.build_and_push.outputs.digest }}
 
