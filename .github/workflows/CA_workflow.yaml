@@ -98,7 +98,7 @@ jobs:
           tags: merylkohxml/cicdworkshop:${{github.sha}}
 
       - name: Install Cosign
-        uses: sigstore/cosign-installer@v3.1.2
+        uses: sigstore/cosign-installer@v3.1.2 # needs cosign v2.2.0
 
       - name: Check Install
         run: cosign version
@@ -112,66 +112,9 @@ jobs:
           TAGS: merylkohxml/cicdworkshop:${{github.sha}}
           DIGEST: ${{ steps.build_and_push.outputs.digest }}
 
-      # - name: Sign image with a key
-      #   run: |
-      #     cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${TAGS}@${DIGEST}"
-      #   env:
-      #     TAGS: ${{ steps.build_and_push.outputs.tags }}
-      #     COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-      #     COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-      #     DIGEST: ${{ steps.build_and_push.outputs.digest }}
-
-      # - name: Send Slack notification
-      #   id: send_slack_notification
-      #   uses: slackapi/slack-github-action@v1.24.0
-      #   with:
-      #     payload: |
-      #       {
-      #         "blocks": [
-      #           {
-      #             "type": "section",
-      #             "text": {
-      #               "type": "plain_text",
-      #               "text": "Name"
-      #             }
-      #           },
-      #           {
-      #             "type": "section",
-      #             "fields": [
-      #               {
-      #                 "type": "mrkdwn",
-      #                 "text": "*Ref*\n${{github.ref}}"
-      #               },
-      #               {
-      #                 "type": "mrkdwn",
-      #                 "text": "*Event*\n${{github.event_name}}"
-      #               }
-      #             ]
-      #           },
-      #           {
-      #             "type": "section",
-      #             "fields": [
-      #               {
-      #                 "type": "mrkdwn",
-      #                 "text": "*Actions URL:*\n<${{github.repositoryUrl}}|${{github.action}}>"
-      #               },
-      #               {
-      #                 "type": "mrkdwn",
-      #                 "text": "*Commit*\n${{ steps.commit.outputs.short }}"
-      #               }
-      #             ]
-      #           },
-      #           {
-      #             "type": "section",
-      #             "fields": [
-      #               {
-      #                 "type": "mrkdwn",
-      #                 "text": "*Scan failed - Name*\nFailed trivy scan, see uploaded report"
-      #               }
-      #             ]
-      #           }
-      #         ]
-      #       }
-      #   env:
-      #     SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
-      #     SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      - name: Send Slack notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_TITLE: ""
+          SLACK_MESSAGE: "Failed trivy scan, see uploaded report"
