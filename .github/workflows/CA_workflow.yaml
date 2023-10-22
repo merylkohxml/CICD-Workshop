@@ -15,13 +15,13 @@ jobs:
 
       - name: Build an image from Dockerfile
         run: |
-          docker build -t docker.io/gdipsa/cicdworkshop:${{ github.sha }} ./fortunes
+          docker build -t docker.io/merylkohxml/cicdworkshop/myimage:${{ github.sha }} ./fortunes
 
       - name: Run Trivy scan
         id: run_trivy_scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: "docker.io/gdipsa/cicdworkshop:${{ github.sha }}"
+          image-ref: "docker.io/merylkohxml/cicdworkshop/myimage:${{ github.sha }}"
           format: "table"
           exit-code: "1"
           ignore-unfixed: true
@@ -105,9 +105,13 @@ jobs:
 
       - name: Sign image with a key
         run: |
-          cosign sign --key cosign.key docker.io/merylkohxml/cicdworkshop/myimage" ${TAGS}"
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${TAGS}@${DIGEST}"
         env:
-          TAGS: ${{ steps.build_and_push.outputs.tags }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          TAGS: merylkohxml/cicdworkshop:${{github.sha}}
+          ## Optional, will not test
+          # DIGEST: ${{ steps.build-and-push.outputs.digest }}
 
       # - name: Sign image with a key
       #   run: |
