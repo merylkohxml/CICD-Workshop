@@ -1,4 +1,4 @@
-name: CA Workflow
+name: build and push
 on:
   push:
     branches:
@@ -117,4 +117,4 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_TITLE: "Image build and sign"
-          SLACK_MESSAGE: "*Name:* Maryl Koh\n*Matriculation:* A0158940X\n*Email:* ${{env.USER_EMAIL}}\n*Git:* ${{github.repositoryUrl}}\n*Image:* ${{env.DOCKER_IMAGE_URL}}"
+          SLACK_MESSAGE: "*Name:* Meryl Koh\n*Matriculation:* A0158940X\n*Email:* ${{vars.USER_EMAIL}}\n*Git:* ${{github.repositoryUrl}}\n*Image:* ${{vars.DOCKER_IMAGE_URL}}"
