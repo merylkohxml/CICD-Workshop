@@ -117,31 +117,4 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_TITLE: "Image build and sign"
-          SLACK_MESSAGE: ""
-        with:
-          payload: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Name:*\nMeryl Koh"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Matriculation:*\nA0158940X"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Git:*\nGitLink"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Image:*\nImageLink"
-                    },
-                  ]
-                }
-              ]
-            }
+          SLACK_MESSAGE: "*Name:* Maryl Koh\n*Matriculation:* A0158940X\n*Email:* ${{env.USER_EMAIL}}\n*Git:* ${{github.repositoryUrl}}\n*Image:* ${{env.DOCKER_IMAGE_URL}}"
