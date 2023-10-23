@@ -26,7 +26,7 @@ jobs:
           exit-code: "1"
           ignore-unfixed: true
           vuln-type: "os,library"
-          severity: "CRITICAL"
+          severity: "HIGH"
           output: "trivy-report.txt"
 
       - name: Upload trivy report
@@ -116,5 +116,5 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_TITLE: "Image build and sign"
+          SLACK_TITLE: "Image build and signed"
           SLACK_MESSAGE: "*Name:* Meryl Koh\n*Matriculation:* A0158940X\n*Email:* ${{vars.USER_EMAIL}}\n*Git:* ${{github.repositoryUrl}}\n*Image:* ${{vars.DOCKER_IMAGE_URL}}"
