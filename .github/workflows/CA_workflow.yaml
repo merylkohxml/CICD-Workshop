@@ -116,5 +116,5 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_TITLE: ""
-          SLACK_MESSAGE: "Failed trivy scan, see uploaded report"
+          SLACK_TITLE: "Image build and sign"
+          SLACK_MESSAGE: "*Name:* Name\n*Matriculation:*Matriculation\n*Email:*Email\n*Git:* Gitlink\n*Image:* Imagelink"
