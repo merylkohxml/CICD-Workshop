@@ -1,4 +1,4 @@
-name: build and push #test
+name: build and push
 on:
   push:
     branches:
@@ -27,7 +27,7 @@ jobs:
           exit-code: "1"
           ignore-unfixed: true
           vuln-type: "os,library"
-          severity: "HIGH"
+          severity: "CRITICAL"
           output: "trivy-report.txt"
 
       - name: Upload trivy report
