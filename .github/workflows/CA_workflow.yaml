@@ -7,7 +7,7 @@ on:
 jobs:
   scan_repository:
     runs-on: ubuntu-latest
-    if: "!startsWith(github.event.head_commit.message , '${{vars.NO_RUN_COMMIT_MESSAGE}}' )"
+    if: ${{ !startsWith(github.event.head_commit.message , '#NORUN') }}
 
     steps:
       - name: Checkout code
